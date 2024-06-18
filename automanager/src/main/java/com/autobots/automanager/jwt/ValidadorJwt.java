@@ -3,7 +3,9 @@ package com.autobots.automanager.jwt;
 import java.util.Date;
 
 import io.jsonwebtoken.Claims;
+import org.springframework.stereotype.Component;
 
+@Component
 class ValidadorJwt {
 	public boolean validar(Claims reivindicacoes) {
 		if (reivindicacoes != null) {

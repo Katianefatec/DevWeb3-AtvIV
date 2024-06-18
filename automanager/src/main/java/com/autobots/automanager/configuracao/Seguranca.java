@@ -14,7 +14,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.autobots.automanager.adaptadores.UserDetailsServiceImpl;
+import com.autobots.automanager.adaptadores.UserDetailsServiceAdapter;
 import com.autobots.automanager.filtros.Autenticador;
 import com.autobots.automanager.filtros.Autorizador;
 import com.autobots.automanager.jwt.ProvedorJwt;
@@ -25,7 +25,7 @@ import com.autobots.automanager.jwt.ProvedorJwt;
 public class Seguranca extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private UserDetailsServiceImpl servico;
+	private UserDetailsServiceAdapter servico;
 
 	@Autowired
 	private ProvedorJwt provedorJwt;
