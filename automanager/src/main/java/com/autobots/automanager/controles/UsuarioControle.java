@@ -16,6 +16,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -39,6 +40,7 @@ public class UsuarioControle {
     private CredencialRepositorio credencialRepositorio;
 
     @GetMapping("/usuario/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<EntityModel<UsuarioDTO>> obterUsuario(@PathVariable long id) {
         Usuario usuario = repositorio.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario não encontrado"));
@@ -48,6 +50,7 @@ public class UsuarioControle {
     }
 
     @GetMapping("/usuarios")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<List<UsuarioDTO>> obterUsuarios() {
         List<Usuario> usuarios = repositorio.findAll();
         if (usuarios.isEmpty()) {
@@ -61,12 +64,14 @@ public class UsuarioControle {
     }
 
     @PostMapping("/cadastro")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<?> cadastrarUsuario(@RequestBody Usuario usuario) {
         repositorio.save(usuario);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/atualizar/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<?> atualizarUsuario(@RequestBody Usuario usuario) {
         HttpStatus status = HttpStatus.CONFLICT;
         if (usuario.getId() != null) {
@@ -77,6 +82,7 @@ public class UsuarioControle {
     }
 
     @DeleteMapping("/excluir/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<?> excluirUsuario(@PathVariable Long id) {
         if (!usuarioRepositorio.existsById(id)) {
             return ResponseEntity.notFound().build();

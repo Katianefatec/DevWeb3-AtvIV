@@ -12,6 +12,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,6 +30,7 @@ public class MercadoriaControle {
     private AdicionadorLinkMercadoria adicionadorLink;
 
     @GetMapping("/mercadoria/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<EntityModel<MercadoriaDTO>> obterMercadoria(@PathVariable long id) {
         Mercadoria mercadoria = repositorio.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Mercadoria não encontrada"));
@@ -38,6 +40,7 @@ public class MercadoriaControle {
     }
 
     @GetMapping("/mercadorias")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<List<MercadoriaDTO>> obterMercadorias() {
         List<Mercadoria> mercadorias = repositorio.findAll();
         if (mercadorias.isEmpty()) {
@@ -51,6 +54,7 @@ public class MercadoriaControle {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<?> cadastrarMercadoria(@RequestBody MercadoriaDTO mercadoriaDTO) {
         Mercadoria mercadoria = modelMapper.map(mercadoriaDTO, Mercadoria.class);
         if (mercadoria.getCadastro() == null) {
@@ -69,6 +73,7 @@ public class MercadoriaControle {
 
 
     @PutMapping("/atualizar")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<?> atualizarMercadoria(@RequestBody Mercadoria mercadoria) {
         HttpStatus status = HttpStatus.CONFLICT;
         if (mercadoria.getId() != null) {
@@ -79,6 +84,7 @@ public class MercadoriaControle {
     }
 
     @DeleteMapping("/excluir")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<?> excluirMercadoria(@RequestBody Mercadoria mercadoria) {
         if (mercadoria.getId() != null) {
             repositorio.delete(mercadoria);

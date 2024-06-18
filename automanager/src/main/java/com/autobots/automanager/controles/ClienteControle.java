@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.autobots.automanager.entidades.Cliente;
@@ -25,6 +26,7 @@ public class ClienteControle {
 	private AdicionadorLinkCliente adicionadorLink;
 
 	@GetMapping("/cliente/{id}")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE') or hasRole('VENDEDOR') or (hasRole('CLIENTE') and #id == authentication.principal.id)")
 	public ResponseEntity<Cliente> obterCliente(@PathVariable long id) {
 		List<Cliente> clientes = repositorio.findAll();
 		Cliente cliente = selecionador.selecionar(clientes, id);
@@ -52,6 +54,7 @@ public class ClienteControle {
 	}
 
 	@PostMapping("/cadastro")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE') or hasRole('VENDEDOR')")
 	public ResponseEntity<?> cadastrarCliente(@RequestBody Cliente cliente) {
 		HttpStatus status = HttpStatus.CONFLICT;
 		if (cliente.getId() == null) {
@@ -63,6 +66,7 @@ public class ClienteControle {
 	}
 
 	@PutMapping("/atualizar")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE') or hasRole('VENDEDOR') or (hasRole('CLIENTE') and #id == authentication.principal.id)")
 	public ResponseEntity<?> atualizarCliente(@RequestBody Cliente atualizacao) {
 		HttpStatus status = HttpStatus.CONFLICT;
 		Cliente cliente = repositorio.getById(atualizacao.getId());
@@ -78,6 +82,7 @@ public class ClienteControle {
 	}
 
 	@DeleteMapping("/excluir")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
 	public ResponseEntity<?> excluirCliente(@RequestBody Cliente exclusao) {
 		HttpStatus status = HttpStatus.BAD_REQUEST;
 		Cliente cliente = repositorio.getById(exclusao.getId());

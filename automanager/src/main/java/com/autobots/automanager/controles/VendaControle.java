@@ -10,6 +10,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -25,6 +26,7 @@ public class VendaControle {
     private AdicionadorLinkVenda adicionadorLink;
 
     @GetMapping("/venda/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<EntityModel<VendaDTO>> obterVenda(@PathVariable long id) {
         Venda venda = repositorio.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Venda não encontrada"));
@@ -34,6 +36,7 @@ public class VendaControle {
     }
 
     @GetMapping("/vendas")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<List<VendaDTO>> obterVendas() {
         List<Venda> vendas = repositorio.findAll();
         if (vendas.isEmpty()) {
@@ -46,4 +49,19 @@ public class VendaControle {
         return ResponseEntity.ok
                 (vendasDTO);
     }
+
+    @PostMapping("/cadastro")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
+    public ResponseEntity<?> cadastrarVenda(@RequestBody Venda venda) {
+        repositorio.save(venda);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/venda/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
+    public ResponseEntity<?> deletarVenda(@PathVariable long id) {
+        repositorio.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

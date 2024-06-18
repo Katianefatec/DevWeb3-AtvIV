@@ -11,6 +11,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -26,6 +27,7 @@ public class ServicoControle {
     private AdicionadorLinkServico adicionadorLink;
 
     @GetMapping("/servico/{id}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<EntityModel<ServicoDTO>> obterServico(@PathVariable long id) {
         Servico servico = repositorio.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Servico não encontrado"));
@@ -35,6 +37,7 @@ public class ServicoControle {
     }
 
     @GetMapping("/servicos")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<List<ServicoDTO>> obterServicos() {
         List<Servico> servicos = repositorio.findAll();
         if (servicos.isEmpty()) {
@@ -48,6 +51,7 @@ public class ServicoControle {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<?> cadastrarServico(@RequestBody Servico servico) {
         repositorio.save(servico);
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -55,6 +59,7 @@ public class ServicoControle {
 
 
     @PutMapping("/atualizar")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<?> atualizarServico(@RequestBody Servico servico) {
         HttpStatus status = HttpStatus.CONFLICT;
         if (servico.getId() != null) {
@@ -65,6 +70,7 @@ public class ServicoControle {
     }
 
     @DeleteMapping("/excluir")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('GERENTE')")
     public ResponseEntity<?> excluirServico(@RequestBody Servico servico) {
         if (servico.getId() != null) {
             repositorio.delete(servico);
