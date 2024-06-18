@@ -1,6 +1,7 @@
 package com.autobots.automanager.jwt;
 
 import com.autobots.automanager.entidades.CredencialUsuarioSenha;
+import com.autobots.automanager.entidades.Permissao;
 import com.autobots.automanager.entidades.Usuario;
 import com.autobots.automanager.enumeracoes.PerfilUsuario;
 import com.autobots.automanager.repositorios.CredencialUsuarioSenhaRepositorio;
@@ -11,6 +12,17 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -34,9 +46,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .builder()
                 .username(credencial.getNomeUsuario())
                 .password(credencial.getSenha())
-                .authorities(usuario.getPerfis().stream()
-                        .map(PerfilUsuario::toString)
-                        .toArray(String[]::new))
+                .authorities(usuario.getPermissoes().stream()
+                        .map(permissao -> new SimpleGrantedAuthority(permissao.getNome().name()))
+                        .collect(Collectors.toSet()))
                 .build();
     }
 }

@@ -17,8 +17,7 @@ public class UsuarioPermissao {
     @JoinColumn(name = "PERMISSAO_ID")
     private Permissao permissao;
 
-    public UsuarioPermissao() {
-    }
+    public UsuarioPermissao() {}
 
     public UsuarioPermissao(Usuario usuario, Permissao permissao) {
         this.usuario = usuario;
@@ -31,5 +30,21 @@ public class UsuarioPermissao {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+    }
+
+    public Permissao getPermissao() {
+        return permissao;
+    }
+
+    public void setPermissao(Permissao permissao) {
+        this.permissao = permissao;
     }
 }

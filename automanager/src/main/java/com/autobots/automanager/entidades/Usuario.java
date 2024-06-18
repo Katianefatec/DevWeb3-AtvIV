@@ -40,10 +40,18 @@ public class Usuario {
 	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	private Set<Veiculo> veiculos = new HashSet<>();
 	@OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
-	private CredencialUsuarioSenha credencial;
+	private CredencialUsuarioSenha credencial; // Relacionamento com CredencialUsuarioSenha
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "empresa_id")
 	private Empresa empresa;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "USUARIO_PERMISSAO",
+			joinColumns = @JoinColumn(name = "USUARIO_ID"),
+			inverseJoinColumns = @JoinColumn(name = "PERMISSAO_ID")
+	)
+	private Set<Permissao> permissoes = new HashSet<>();
 
 	@Override
 	public int hashCode() {

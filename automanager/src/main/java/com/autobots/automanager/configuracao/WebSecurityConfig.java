@@ -46,13 +46,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/auth/login").permitAll()
 				.anyRequest().authenticated()
 				.and()
-				.addFilter(new JwtAuthenticationFilter(authenticationManager(), provedorJwt))
-				.addFilter(new JwtAuthorizationFilter(authenticationManager(), provedorJwt, userDetailsService))
+				.addFilter(new JwtAuthenticationFilter(authenticationManagerBean(), provedorJwt))
+				.addFilter(new JwtAuthorizationFilter(authenticationManagerBean(), provedorJwt, userDetailsService))
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
 	}
 }

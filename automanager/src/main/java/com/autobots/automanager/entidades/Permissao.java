@@ -1,6 +1,9 @@
 package com.autobots.automanager.entidades;
 import com.autobots.automanager.enumeracoes.PermissaoEnum;
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
 
 
 @Entity
